@@ -1,0 +1,16 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package package1;
+
+/**
+ *
+ * @author athiralekshmicv
+ */
+public interface EvaluationParameters {
+    double homeassignments=15;
+    double ClassTests	  =15;
+    double Periodicals    =30;
+    double EndExam        =40;
+}

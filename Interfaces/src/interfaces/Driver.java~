@@ -1,0 +1,46 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package interfaces;
+import package3.Student;
+import java.util.*;
+/**
+ *
+ * @author athiralekshmicv
+ */
+public class Driver {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+      Student s1[]=new Student[3];
+      Scanner in=new Scanner(System.in);
+      String n;
+      
+      for(int i=0;i<3;i++){
+          s1[i]=new Student();
+           System.out.println("ENTER THE ID OF THE STUDENT");
+           s1[i].setId(in.nextInt());
+          System.out.println("ENTER THE NAME OF THE STUDENT");
+          String nm=in.nextLine();
+           s1[i].setName(nm);
+           System.out.println("Entreing the marks");
+          
+           System.out.println("ENTER THE MARKS OF THE STUDENT IN HOME ASSIGNMENTS(MAX 50)");
+           double one=(in.nextInt());
+            System.out.println("ENTER THE MARKS OF THE STUDENT IN PERIODICALS(MAX 50)");
+            double two=(in.nextInt());
+             System.out.println("ENTER THE MARKS OF THE STUDENT IN END EXAM(MAX 50)");
+            double three=(in.nextInt());
+             System.out.println("ENTER THE MARKS OF THE STUDENT IN CLASS TESTS(MAX 50)");
+            double four=(in.nextInt());
+            s1[i].getMarks(one,two,three,four);
+            System.out.println("The total marks is" + s1[i].evaluate());
+            
+           
+      }
+      
+    }
+}
