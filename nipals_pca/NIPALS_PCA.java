@@ -2,26 +2,31 @@ package nipals_pca;
 
 
  /*
- * @author Athira Lekshmi
- */
+  * @author Athira Lekshmi
+  */
+ 
 public class NIPALS_PCA {
-
+    
+    /** 
+     * Function to find the mean centered matrix
+     */
     static double[][] center(double[][] input) {
-
-                double[] centered= new double[input[0].length];
-		double[][] out = new double[input.length][input[0].length];
-                centered=mean(input);
-		for(int i = 0; i < input[0].length; i++)
-			for(int j = 0; j < input.length; j++) {
-				out[j][i]=centered[i]-input[j][i];
-                               
-                                
-			}  
-		return out;
+        double[] centered= new double[input[0].length];
+	double[][] out = new double[input.length][input[0].length];
+        centered=mean(input);
+        for(int i = 0; i < input[0].length; i++){
+	    for(int j = 0; j < input.length; j++) {
+                out[j][i]=centered[i]-input[j][i];
+            }  
+        }
+        
+	return out;
     }
     
+    /**
+     *	 Function to find the column-mean
+     */
     static double[]  mean(double[][] data){
-        
         double average[] = new double[data[0].length];
         for(int i=0;i<data[0].length;i++){
             double total = 0;
@@ -29,71 +34,86 @@ public class NIPALS_PCA {
                   total = total + data[j][i];
             }
             average[i] = total / data.length;
-            
         }
-        return average;
         
+        return average;
     }
     
+    /**
+     *	Function to find the transpose of 2D matrix
+     */
     static double[][] transpose(double[][] mat){
-       
-        double[][] transpose=new double[mat[0].length][mat.length];
+       double[][] transpose=new double[mat[0].length][mat.length];
         for ( int c = 0 ; c < mat.length ; c++ ){
              for ( int d = 0 ; d < mat[0].length ; d++ ){               
                 transpose[d][c] = mat[c][d];
          }
       }
+      
       return transpose;
     }
     
-      static double dot(double[] t1){
+    /**
+     * Function to find the (matrix)*(matrix-transpose) of a 1-D matrix
+     */
+    static double dot(double[] t1){
         double r=0;
-       for(int i=0;i<t1.length;i++){
+        for(int i=0;i<t1.length;i++){
             r+=(t1[i]*t1[i]);
-        
         }
+        
         return r;
     }
       
+    /**
+     * Function to find the product of the data matrix and a 1D matrix
+     */
     static double[] multiplication(double[][] mat1,double[] mat2){
-      
         int n=mat1.length,m=mat1[0].length;
         double[] multi=new double[mat1.length];
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
                 multi[i]+=(mat1[i][j]*mat2[j]);
             }   
-        }    
+        }
+        
+        
         return multi;
     }
-  
-    static double[][] subtract(double[][] mat,double[][] pca){
     
+    /**
+     * Function to subtract two 2-D  matrices
+     */
+    static double[][] subtract(double[][] mat,double[][] pca){
         double[][] res=new double[mat.length][mat[0].length];
         for(int i=0;i<mat.length;i++){
             for(int j=0;j<mat[0].length;j++){
                 res[i][j]=mat[i][j]-pca[i][j];
-                
             }    
         }
+        
         return res;
-    
     }
     
+    /**
+     * Function to normalize a matrix
+     */ 
     static double norm(double[] data){
-     
         double res=0.0;
         for(int i=0;i<data.length;i++){
                 res+=(data[i]*data[i]);
-        
         }
+        
         res=res/Math.sqrt(res);
         return res;
-        
     }
     
+    /**
+     * Function to find the P and T components of the mean centered 
+     * data matrix
+     */ 
      static void nipals(double[][] mat){
-        
+     	// number of PCA components is set to 5
         int numofpc=5;
         double[][] transpose=new double[mat[0].length][mat.length];
         double[] p=new double[mat[0].length];
@@ -103,20 +123,18 @@ public class NIPALS_PCA {
         double[][] E=new double[mat.length][mat[0].length];
         double val=0,threshold=0.00000001,d=0;
 	int count=0;
-       
         for(int i=0;i<numofpc;i++){
             // Column vector t
             for(int j = 0; j < t.length; j++) {
 		t[j] = mat[j][i]; 
-                
-            }
-         
+            } 
+            
             do{
-                // to find loading p
-                /*
-                1. Multiply transpose of data matrix with column vector
-                2. Divide by the dot product col_vect.col_vect
-                */
+                /** to find loading p
+                 *
+                 * 1. Multiply transpose of data matrix with column vector
+                 * 2. Divide by the dot product col_vect.col_vect
+                 */
                 double[][]trans=transpose(mat);
                 p=multiplication(trans,t);
                 val=dot(t);
@@ -126,77 +144,57 @@ public class NIPALS_PCA {
                 }
                 
                 //NORMALIZING THE P VECTOR
-                
                 d=norm(p);
                 for(int k=0;k<p.length;k++){
                         p[k]/=d;
                 
-                }
-               
+                } 
+                
                 t_old=t;
                 //FINDING T VECTOR
-                /*
-                1. Multiply the data matrix with p matrix
-                2. Divide by the dot product p
-                */
+                /**
+                 * 1. Multiply the data matrix with p matrix
+                 * 2. Divide by the dot product p
+                 */
                 t=multiplication(mat,p);
                 val=dot(p);
                 for(int k=0;k<t.length;k++){
                     t[k]/=val;
-                    
                 }
-               
                 
                 //TO CHECK CONVERGENCE
                 for(int k=0;k<t_old.length;k++){
                     temp[k]=t_old[i]-t[i];
-                
                 }
+                
                 d=norm(temp);
-          
-                
-                
             }while(d>threshold);
-            
             
             for(int n=0;n<t.length;n++){
                 for(int m=0;m<p.length;m++){
-                   
                     E[n][m]=(t[n]*p[m]);
                 }
             }
+            
             System.out.println("P["+i+"]");
             for(int n=0;n<p.length;n++){
                 p[n]*=-1;
                 System.out.print(p[n]+" ");
             }
+            
             System.out.println();
             System.out.println("T["+i+"]");
             for(int n=0;n<t.length;n++){
                 System.out.print(t[n]+" ");
             }
+            
             System.out.println();
-            
-            
-            
             double[][] result=subtract(mat,E);
-            
             mat=result;
-            
-         
-            
-      
-        
-            
-            }
-            
-           
-     
-        
         }
+    }
         
-     
-    public static void main(String[] args) {
+     public static void main(String[] args) {
         double[][] data = {{0.537667139546100,-1.34988694015652,0.671497133608081,0.888395631757642,-0.102242446085491},
                           {1.83388501459509,3.03492346633185,-1.20748692268504,-1.14707010696915,-0.241447041607358}, 
 			  {-2.25884686100365,0.725404224946106,0.717238651328839,-1.06887045816803,0.319206739165502},
@@ -208,18 +206,11 @@ public class NIPALS_PCA {
                           {3.57839693972576,1.40903448980048,0.293871467096658,1.37029854009523,1.09326566903948},
                           {2.76943702988488,1.41719241342961,-0.787282803758638,-1.71151641885370,1.10927329761440}
         };
-       // double[][] data={{1,2,3},{2,4,8}};
-        // HERE WE AREF FINDING TWO PCA COMPONENTS
+        // double[][] data={{1,2,3},{2,4,8}};
+        // Number of PCA components is set to 5
         int no_of_pca=5;
         double[][] norm_data=center(data);
-  
-  
         nipals(norm_data);
-   
-      
-		
-        
     }
-   
 }
     
